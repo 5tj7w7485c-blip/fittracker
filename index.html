@@ -1,1 +1,167 @@
 
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>FitTracker</title>
+<style>
+body{margin:0;padding:18px;background:#101827;color:white;font-family:Arial,sans-serif}
+main{max-width:600px;margin:auto}
+h1{font-size:30px}
+.card{background:#1c293b;padding:17px;border-radius:16px;margin:15px 0}
+button{border:0;border-radius:10px;padding:12px;background:#34445c;color:white;font-weight:bold}
+.days{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.active{background:#22c55e;color:#102018}
+input[type=date]{padding:12px;width:90%;border-radius:9px}
+.exercise{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #40506a}
+.exercise input{width:23px;height:23px;accent-color:#22c55e}
+.detail{font-size:13px;color:#aab6c8;margin-top:5px}
+.done .name{text-decoration:line-through;color:#aab6c8}
+.progress{height:12px;background:#40506a;border-radius:20px;margin:12px 0}
+.bar{height:100%;background:#22c55e;width:0;border-radius:20px}
+.reset{background:#963746;width:100%;margin-top:15px}
+.muted{color:#aab6c8}
+</style>
+</head>
+<body>
+<main>
+<h1>🏋️ FitTracker</h1>
+<p class="muted">Il tuo percorso in palestra</p>
+
+<section class="card">
+<h3>📅 Data allenamento</h3>
+<input type="date" id="date">
+<h3>Seleziona il giorno</h3>
+<div class="days" id="days"></div>
+</section>
+
+<section class="card">
+<h2 id="title"></h2>
+<p class="muted" id="description"></p>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<strong id="percent"></strong>
+</section>
+
+<section class="card">
+<h3>La tua scheda</h3>
+<div id="exercises"></div>
+<button class="reset" onclick="resetDay()">Azzera allenamento</button>
+</section>
+
+<section class="card">
+<h3>📈 Progressi</h3>
+<strong id="summary">0 esercizi completati</strong>
+</section>
+</main>
+
+<script>
+const workouts=[
+{id:"lun",name:"Lunedì",desc:"Petto, spalle e tricipiti",items:[
+["🔥","Riscaldamento","5-8 minuti"],
+["🏋️","Chest press","3 × 10-12"],
+["💪","Panca inclinata manubri","3 × 10"],
+["🏋️","Shoulder press","3 × 10"],
+["💪","Alzate laterali","3 × 12-15"],
+["🏋️","Pushdown ai cavi","3 × 12"],
+["🚶","Tapis roulant","10-15 minuti"]
+]},
+{id:"mar",name:"Martedì",desc:"Schiena e bicipiti",items:[
+["🔥","Riscaldamento","5-8 minuti"],
+["🏋️","Lat machine","3 × 10-12"],
+["🏋️","Rematore macchina","3 × 10-12"],
+["🏋️","Pulley basso","3 × 12"],
+["💪","Curl manubri","3 × 10-12"],
+["🏋️","Curl ai cavi","2 × 12"],
+["🚴","Cyclette","10-15 minuti"]
+]},
+{id:"gio",name:"Giovedì",desc:"Gambe e addominali",items:[
+["🔥","Riscaldamento","5-8 minuti"],
+["🏋️","Leg press","3 × 10-12"],
+["🏋️","Leg curl","3 × 12"],
+["🏋️","Leg extension","3 × 12"],
+["🏋️","Hip thrust","3 × 10-12"],
+["🦵","Calf machine","3 × 15"],
+["💪","Crunch","3 × 15"],
+["🚶","Camminata","10 minuti"]
+]},
+{id:"sab",name:"Sabato",desc:"Total body e cardio",items:[
+["🔥","Riscaldamento","5-8 minuti"],
+["🏋️","Chest press","3 × 10"],
+["🏋️","Lat machine","3 × 10"],
+["🏋️","Leg press","3 × 12"],
+["🏋️","Shoulder press","2 × 10"],
+["💪","Plank","3 × 20-30 secondi"],
+["🚴","Ellittica","15-20 minuti"]
+]}
+];
+
+const $=id=>document.getElementById(id);
+function localDate(){
+ const d=new Date();
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+$("date").value=localDate();
+
+let selected="lun";
+let saved={};
+try{saved=JSON.parse(localStorage.getItem("fittracker_data")||"{}")}catch(e){}
+
+function key(){return $("date").value+"_"+selected}
+function checks(){return saved[key()]||[]}
+function save(){localStorage.setItem("fittracker_data",JSON.stringify(saved))}
+
+function choose(id){selected=id;render()}
+
+function toggle(i){
+ let c=checks();
+ c[i]=!c[i];
+ saved[key()]=c;
+ save();
+ render();
+}
+
+function resetDay(){
+ if(confirm("Vuoi azzerare questo allenamento?")){
+ saved[key()]=[];
+ save();
+ render();
+ }
+}
+
+function render(){
+ const w=workouts.find(x=>x.id===selected);
+ $("days").innerHTML=workouts.map(x=>
+ `<button class="${x.id===selected?"active":""}" onclick="choose('${x.id}')">${x.name}</button>`
+ ).join("");
+
+ $("title").textContent=w.name;
+ $("description").textContent=w.desc;
+
+ const c=checks();
+ const done=c.filter(Boolean).length;
+ const pct=Math.round(done/w.items.length*100);
+ $("bar").style.width=pct+"%";
+ $("percent").textContent=pct+"% completato ("+done+"/"+w.items.length+")";
+
+ $("exercises").innerHTML=w.items.map((x,i)=>
+ `<label class="exercise ${c[i]?"done":""}">
+ <input type="checkbox" ${c[i]?"checked":""} onchange="toggle(${i})">
+ <span>${x[0]}</span>
+ <span><strong class="name">${x[1]}</strong><div class="detail">${x[2]}</div></span>
+ </label>`
+ ).join("");
+
+ let total=0;
+ Object.values(saved).forEach(a=>total+=a.filter(Boolean).length);
+ $("summary").textContent=total+" esercizi completati in totale";
+}
+
+$("date").addEventListener("change",render);
+render();
+</script>
+</body>
+</html>
+
+
