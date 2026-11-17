@@ -2,448 +2,589 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080b09">
 <title>FitTracker</title>
+
 <style>
-:root {
-  --bg:#080b09;
-  --panel:#111713;
-  --panel2:#18221b;
-  --green:#39ff75;
-  --muted:#829087;
-  --line:#26352b;
+:root{
+ --bg:#080b09;--panel:#111813;--panel2:#19231c;
+ --green:#39ff75;--text:#f4f8f5;--muted:#87958b;
+ --line:#29372d;
 }
 *{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:white;
-  font-family:Arial,sans-serif;padding-bottom:85px;
-}
-header{
-  padding:22px 18px 12px;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.logo{font-size:23px;font-weight:900}
-.logo span{color:var(--green)}
-.status{color:var(--green);font-size:11px}
-main{padding:12px 15px}
-h2{font-size:19px;margin:12px 0}
-h3{font-size:15px;margin:5px 0}
-p{color:var(--muted);font-size:13px}
-.panel{
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:17px;padding:15px;margin-bottom:14px;
-}
-.hero{
-  background:linear-gradient(135deg,#132219,#0b100d);
-  border:1px solid #24432e;border-radius:20px;padding:18px;
-}
-.big{font-size:30px;font-weight:900;color:var(--green)}
-.muted{color:var(--muted);font-size:12px}
-button{
-  background:var(--green);color:#061009;border:0;
-  border-radius:11px;padding:11px 14px;font-weight:bold;
-  cursor:pointer;
-}
-button.secondary{
-  background:var(--panel2);color:white;border:1px solid var(--line);
-}
-input,select{
-  width:100%;padding:12px;border-radius:10px;
-  border:1px solid var(--line);background:#0a100c;color:white;
-  margin:6px 0 12px;
-}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:var(--panel2);padding:13px;border-radius:13px}
-.stat strong{font-size:22px;color:var(--green);display:block}
-.body-layout{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.body-svg{width:100%;height:auto;max-height:420px}
-.muscle{
-  fill:#344039;stroke:#87968b;stroke-width:1.5;
-  cursor:pointer;transition:all .3s;
-}
-.muscle.active{stroke:white;stroke-width:2.5}
-.muscle:hover{filter:brightness(1.5)}
-.muscle-list{display:flex;flex-direction:column;gap:7px}
-.muscle-btn{
-  width:100%;text-align:left;background:#152019;color:white;
-  border:1px solid var(--line);padding:10px;border-radius:10px;
-}
-.muscle-btn.selected{border-color:var(--green)}
-.rank{font-size:11px;font-weight:bold;float:right}
-.progress{height:7px;background:#28342c;border-radius:20px;overflow:hidden;margin:8px 0}
-.progress span{display:block;height:100%;background:var(--green)}
-.tabs{
-  position:fixed;bottom:0;left:0;right:0;
-  background:#101611;border-top:1px solid var(--line);
-  display:flex;justify-content:space-around;padding:10px 3px;
-  z-index:5;
-}
-.tabs button{background:transparent;color:#91a095;padding:8px 5px;font-size:11px}
+body{margin:0;background:var(--bg);color:var(--text);
+ font-family:Arial,sans-serif;padding-bottom:85px}
+header{padding:20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:23px;font-weight:900}.logo span{color:var(--green)}
+main{padding:0 15px}
+h2{font-size:19px;margin:18px 0 12px}
+h3{font-size:15px}
+p,.muted{color:var(--muted);font-size:12px}
+.panel{background:var(--panel);border:1px solid var(--line);
+ border-radius:17px;padding:15px;margin-bottom:13px}
+button{border:0;border-radius:10px;background:var(--green);
+ color:#071009;padding:11px 14px;font-weight:bold;cursor:pointer}
+button.secondary{background:var(--panel2);color:white;border:1px solid var(--line)}
+button.danger{background:#3a171b;color:#ff8791}
+input,select{width:100%;padding:12px;background:#0a100c;color:white;
+ border:1px solid var(--line);border-radius:10px;margin:6px 0 12px}
+label{font-size:12px;color:var(--muted)}
+.page{display:none}.page.active{display:block}
+.tabs{position:fixed;bottom:0;left:0;right:0;background:#101611;
+ border-top:1px solid var(--line);display:flex;justify-content:space-around;
+ padding:10px 2px;z-index:10}
+.tabs button{background:transparent;color:var(--muted);font-size:11px;padding:7px}
 .tabs button.active{color:var(--green)}
-.page{display:none}
-.page.active{display:block}
-.exercise{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 0;border-bottom:1px solid var(--line);
-}
+.rankbox{text-align:center;padding:12px 0 4px}
+.rankletter{font-size:58px;font-weight:1000;line-height:1}
+.rankname{font-size:12px;letter-spacing:3px;color:var(--muted);margin-top:8px}
+.bodybox{display:flex;justify-content:center;align-items:center}
+.body-svg{width:100%;max-width:270px;height:350px}
+.muscle{stroke:#a2b0a5;stroke-width:1.1;fill:#354139;transition:.5s;cursor:pointer}
+.muscle.selected{stroke:white;stroke-width:2.5}
+.muscle-list{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.muscle-btn{background:var(--panel2);color:white;text-align:left;
+ border:1px solid var(--line);font-size:12px;padding:10px}
+.muscle-btn.selected{border-color:var(--green)}
+.muscle-btn span{float:right;font-weight:bold}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:var(--panel2);border-radius:12px;padding:12px}
+.stat strong{display:block;font-size:21px;color:var(--green)}
+.dayrow{display:flex;align-items:center;justify-content:space-between;
+ padding:12px 0;border-bottom:1px solid var(--line);gap:8px}
+.dayrow:last-child{border:0}
+.dayrow button{font-size:11px;padding:8px}
+.exercise{padding:12px 0;border-bottom:1px solid var(--line)}
 .exercise:last-child{border:0}
-.exercise small{color:var(--muted);display:block;margin-top:4px}
-.exercise input{width:22px;height:22px;margin:0;accent-color:var(--green)}
-.history-item{padding:10px 0;border-bottom:1px solid var(--line)}
+.exercise-top{display:flex;justify-content:space-between;gap:8px}
+.exercise small{color:var(--muted)}
+.exercise input[type=checkbox]{width:20px;height:20px;margin:0;accent-color:var(--green)}
+.smallbtn{padding:7px 9px;font-size:11px}
+.progress{height:7px;background:#26332a;border-radius:10px;overflow:hidden;margin:8px 0}
+.progress span{display:block;height:100%;background:var(--green)}
+.overlay{position:fixed;inset:0;background:#060907;z-index:30;
+ display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+.overlay.hidden{display:none}
+.setup{width:100%;max-width:430px;background:var(--panel);
+ border:1px solid var(--line);padding:22px;border-radius:20px}
+.setup h1{font-size:26px}.setup h1 span{color:var(--green)}
+.notice{font-size:11px;color:var(--muted);line-height:1.5}
 </style>
 </head>
+
 <body>
 
+<div class="overlay" id="setup">
+ <div class="setup">
+  <h1>FIT<span style="color:var(--green)">TRACKER</span></h1>
+  <p>Configura il tuo profilo per iniziare il percorso.</p>
+
+  <label>Modello corporeo</label>
+  <select id="gender">
+   <option value="male">Maschile</option>
+   <option value="female">Femminile</option>
+  </select>
+
+  <label>Età</label>
+  <input id="age" type="number" min="13" max="100" placeholder="Età">
+
+  <label>Peso (kg)</label>
+  <input id="weight" type="number" min="20" max="300" placeholder="Es. 80">
+
+  <label>Altezza (cm)</label>
+  <input id="height" type="number" min="100" max="230" placeholder="Es. 175">
+
+  <button style="width:100%" onclick="saveProfile()">INIZIA IL PERCORSO</button>
+  <p class="notice">I dati vengono salvati su questo dispositivo. Il modello corporeo è una rappresentazione grafica generica, non una fotografia né una previsione precisa del tuo corpo.</p>
+ </div>
+</div>
+
 <header>
-  <div class="logo">FIT<span>TRACKER</span></div>
-  <div class="status">● SISTEMA ATTIVO</div>
+ <div class="logo">FIT<span>TRACKER</span></div>
+ <button class="secondary smallbtn" onclick="editProfile()">Profilo</button>
 </header>
 
 <main>
+
 <section id="home" class="page active">
-  <div class="hero">
-    <div class="muted">IL TUO PERCORSO</div>
-    <h2>Ogni allenamento conta.</h2>
-    <div class="big" id="totalWorkouts">0</div>
-    <div class="muted">esercizi completati</div>
-  </div>
+ <div class="panel rankbox">
+  <div class="muted">IL TUO RANK GENERALE</div>
+  <div class="rankletter" id="overallRank">E</div>
+  <div class="rankname" id="overallName">PRINCIPIANTE</div>
+  <p id="overallDescription">Il tuo percorso comincia qui.</p>
+ </div>
 
-  <h2>Il tuo corpo</h2>
-  <div class="panel">
-    <p>Tocca un muscolo per vedere il suo Rank e i tuoi progressi.</p>
-    <div class="body-layout">
-      <svg class="body-svg" viewBox="0 0 200 430" aria-label="Modello muscolare frontale">
-        <circle cx="100" cy="35" r="23" fill="#59645d" stroke="#a2b0a5" stroke-width="2"/>
-        <path d="M82 62 L118 62 L126 90 L74 90 Z" fill="#59645d"/>
-        <path d="M74 90 Q48 82 38 110 L30 190 L51 194 L66 133 L75 190 L100 200 L125 190 L134 133 L149 194 L170 190 L162 110 Q152 82 126 90 Z" fill="#39443d" stroke="#a2b0a5" stroke-width="2"/>
-        <path id="chest" class="muscle" d="M77 95 Q56 91 53 116 Q61 140 98 145 L98 104 Z"/>
-        <path id="chest2" class="muscle" d="M123 95 Q144 91 147 116 Q139 140 102 145 L102 104 Z"/>
-        <path id="abs" class="muscle" d="M78 148 L98 148 L98 204 L78 190 Z M102 148 L122 148 L122 190 L102 204 Z"/>
-        <path id="shoulders" class="muscle" d="M74 91 Q49 79 42 110 L61 128 L76 111 Z M126 91 Q151 79 158 110 L139 128 L124 111 Z"/>
-        <path id="arms" class="muscle" d="M40 120 L28 188 L45 191 L62 133 Z M160 120 L172 188 L155 191 L138 133 Z"/>
-        <path d="M77 202 L98 202 L91 302 L67 302 Z M102 202 L123 202 L133 302 L109 302 Z" fill="#39443d" stroke="#a2b0a5" stroke-width="2"/>
-        <path id="quads" class="muscle" d="M75 208 L97 208 L91 284 L68 284 Z M103 208 L125 208 L132 284 L109 284 Z"/>
-        <path id="calves" class="muscle" d="M68 309 L91 309 L88 390 L67 390 Z M109 309 L132 309 L135 390 L112 390 Z"/>
-        <path d="M68 390 L88 390 L90 405 L60 405 Z M112 390 L135 390 L140 405 L110 405 Z" fill="#59645d"/>
-      </svg>
-      <div class="muscle-list" id="muscleList"></div>
-    </div>
-  </div>
+ <div class="panel">
+  <h3 style="text-align:center">EVOLUZIONE MUSCOLARE</h3>
+  <div class="bodybox">
+   <svg id="bodySvg" class="body-svg" viewBox="0 0 220 440">
+    <defs>
+     <linearGradient id="skin" x1="0" x2="1">
+      <stop offset="0" stop-color="#27352d"/>
+      <stop offset=".5" stop-color="#59685d"/>
+      <stop offset="1" stop-color="#27352d"/>
+     </linearGradient>
+    </defs>
 
-  <div class="grid">
-    <div class="stat"><strong id="workoutCount">0</strong><span class="muted">Allenamenti</span></div>
-    <div class="stat"><strong id="calorieCount">0</strong><span class="muted">Kcal stimate</span></div>
-  </div>
+    <g id="bodyBase" fill="url(#skin)" stroke="#87968b" stroke-width="1.5">
+     <ellipse cx="110" cy="35" rx="24" ry="29"/>
+     <path d="M95 62 L125 62 L128 86 L92 86Z"/>
+     <path d="M92 82 Q65 73 48 91 L37 158 L29 205 L48 210 L69 145 L76 210 L144 210 L151 145 L172 210 L191 205 L183 158 L172 91 Q155 73 128 82Z"/>
+     <path d="M76 207 L104 207 L101 320 L73 320Z"/>
+     <path d="M116 207 L144 207 L147 320 L119 320Z"/>
+     <path d="M73 316 L101 316 L96 414 L72 414Z"/>
+     <path d="M119 316 L147 316 L148 414 L124 414Z"/>
+     <path d="M72 410 L96 410 L99 424 L64 424Z"/>
+     <path d="M124 410 L148 410 L158 424 L124 424Z"/>
+    </g>
 
-  <h2>Muscolo selezionato</h2>
-  <div class="panel" id="muscleDetail">
-    <h3>Petto</h3>
-    <p>Seleziona un muscolo per vedere i dettagli.</p>
+    <g id="muscleLayer">
+     <path id="chest" class="muscle" d="M94 91 Q67 83 62 108 Q67 135 105 145 L107 98Z"/>
+     <path id="chest2" class="muscle" d="M126 91 Q153 83 158 108 Q153 135 115 145 L113 98Z"/>
+     <path id="shoulders" class="muscle" d="M91 85 Q57 75 49 103 L67 128 L89 112Z M129 85 Q163 75 171 103 L153 128 L131 112Z"/>
+     <path id="arms" class="muscle" d="M43 117 L30 197 L48 201 L66 132Z M177 117 L190 197 L172 201 L154 132Z"/>
+     <path id="abs" class="muscle" d="M86 146 L108 146 L106 204 L84 198Z M114 146 L136 146 L136 198 L114 204Z"/>
+     <path id="quads" class="muscle" d="M78 215 L105 215 L100 298 L75 298Z M115 215 L142 215 L145 298 L120 298Z"/>
+     <path id="calves" class="muscle" d="M76 324 L100 324 L96 399 L74 399Z M120 324 L144 324 L146 399 L124 399Z"/>
+    </g>
+   </svg>
   </div>
+  <div class="muscle-list" id="muscleList"></div>
+  <div id="muscleDetail" class="panel" style="margin-top:12px;margin-bottom:0">
+   <p>Seleziona un muscolo per vedere il suo Rank.</p>
+  </div>
+ </div>
+
+ <h2>Il tuo calendario</h2>
+ <div class="panel">
+  <p>Seleziona un giorno per vedere cosa devi allenare.</p>
+  <div id="weekCalendar"></div>
+  <button class="secondary" style="width:100%;margin-top:12px" onclick="showPage('calendar')">GESTISCI PROGRAMMA SETTIMANALE</button>
+ </div>
+</section>
+
+<section id="calendar" class="page">
+ <h2>Programma settimanale</h2>
+ <div class="panel">
+  <p>Assegna un allenamento a ogni giorno. Puoi anche scegliere riposo.</p>
+  <div id="calendarEditor"></div>
+ </div>
+ <div class="panel">
+  <h3>Allenamento del giorno selezionato</h3>
+  <div id="selectedDayWorkout"></div>
+ </div>
 </section>
 
 <section id="training" class="page">
-  <h2>Allenamento</h2>
-  <div class="panel">
-    <label class="muted">Data</label>
-    <input type="date" id="date">
-    <label class="muted">Giornata</label>
-    <select id="day">
-      <option>Petto e tricipiti</option>
-      <option>Schiena e bicipiti</option>
-      <option>Gambe</option>
-      <option>Spalle e addome</option>
-      <option>Full body</option>
-    </select>
-    <div id="exerciseList"></div>
-    <button class="secondary" onclick="addExercise()">+ Aggiungi esercizio</button>
-    <button onclick="saveTraining()">Salva allenamento</button>
+ <h2>Registra allenamento</h2>
+ <div class="panel">
+  <label>Giorno</label>
+  <select id="trainingDay"></select>
+  <label>Durata allenamento (minuti)</label>
+  <input id="duration" type="number" min="1" placeholder="Es. 60">
+  <div class="grid">
+   <div class="stat"><span class="muted">Peso profilo</span><strong id="profileWeight">--</strong></div>
+   <div class="stat"><span class="muted">Calorie stimate</span><strong id="estimatedCalories">0</strong></div>
   </div>
-  <div class="panel">
-    <h3>Timer recupero</h3>
-    <div class="big" id="timer">01:30</div>
-    <button onclick="startTimer(90)">90 sec</button>
-    <button class="secondary" onclick="startTimer(120)">120 sec</button>
-    <button class="secondary" onclick="stopTimer()">Stop</button>
-  </div>
-</section>
-
-<section id="calories" class="page">
-  <h2>Calorie</h2>
-  <div class="panel">
-    <label class="muted">Peso corporeo (kg)</label>
-    <input id="weight" type="number" placeholder="Es. 80">
-    <label class="muted">Durata allenamento (minuti)</label>
-    <input id="duration" type="number" placeholder="Es. 60">
-    <label class="muted">Intensità</label>
-    <select id="intensity">
-      <option value="3.5">Leggera</option>
-      <option value="5" selected>Moderata</option>
-      <option value="6.5">Intensa</option>
-    </select>
-    <button onclick="calculateCalories()">Calcola calorie</button>
-    <h2 class="big" id="calorieResult">0 kcal</h2>
-    <p>Stima indicativa, non una misurazione precisa.</p>
-  </div>
+  <p>Le calorie sono una stima basata sul peso del profilo e sulla durata. Non sono una misurazione esatta.</p>
+  <button style="width:100%" onclick="saveWorkout()">SALVA SESSIONE</button>
+ </div>
+ <div class="panel">
+  <h3>Esercizi da completare</h3>
+  <div id="trainingExercises"></div>
+ </div>
 </section>
 
 <section id="progress" class="page">
-  <h2>Progressi</h2>
-  <div class="grid">
-    <div class="stat"><strong id="progressWorkouts">0</strong><span class="muted">Sessioni salvate</span></div>
-    <div class="stat"><strong id="progressExercises">0</strong><span class="muted">Esercizi completati</span></div>
-  </div>
-  <div class="panel">
-    <h3>Storico</h3>
-    <div id="history"></div>
-  </div>
-  <div class="panel">
-    <h3>Dati</h3>
-    <button class="secondary" onclick="exportData()">Esporta backup</button>
-    <button class="secondary" onclick="resetData()">Reset dati</button>
-  </div>
+ <h2>Progressi</h2>
+ <div class="grid">
+  <div class="stat"><strong id="sessionCount">0</strong><span class="muted">Sessioni</span></div>
+  <div class="stat"><strong id="exerciseCount">0</strong><span class="muted">Esercizi completati</span></div>
+  <div class="stat"><strong id="calorieCount">0</strong><span class="muted">Kcal stimate</span></div>
+  <div class="stat"><strong id="weightDisplay">--</strong><span class="muted">Peso profilo</span></div>
+ </div>
+ <div class="panel">
+  <h3>Storico allenamenti</h3>
+  <div id="history"></div>
+ </div>
 </section>
+
 </main>
 
 <nav class="tabs">
-  <button class="active" onclick="showPage('home',this)">⌂<br>Home</button>
-  <button onclick="showPage('training',this)">＋<br>Workout</button>
-  <button onclick="showPage('calories',this)">♨<br>Calorie</button>
-  <button onclick="showPage('progress',this)">▥<br>Progressi</button>
+ <button class="active" onclick="showPage('home',this)">⌂<br>Home</button>
+ <button onclick="showPage('calendar',this)">▦<br>Calendario</button>
+ <button onclick="showPage('training',this)">＋<br>Workout</button>
+ <button onclick="showPage('progress',this)">▥<br>Progressi</button>
 </nav>
 
 <script>
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
+const days=["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
 
-const muscles = {
- chest:{name:"Petto",rank:0,weight:0,record:0,progress:0,parts:["chest","chest2"]},
- shoulders:{name:"Spalle",rank:0,weight:0,record:0,progress:0,parts:["shoulders"]},
- arms:{name:"Braccia",rank:0,weight:0,record:0,progress:0,parts:["arms"]},
- abs:{name:"Addominali",rank:0,weight:0,record:0,progress:0,parts:["abs"]},
- quads:{name:"Quadricipiti",rank:0,weight:0,record:0,progress:0,parts:["quads"]},
- calves:{name:"Polpacci",rank:0,weight:0,record:0,progress:0,parts:["calves"]}
-};
-
-const ranks=[
- {name:"E",color:"#87918a"},
- {name:"D",color:"#a66c42"},
- {name:"C",color:"#e2bd42"},
- {name:"B",color:"#35a7ff"},
- {name:"A",color:"#a65cff"},
- {name:"S",color:"#39ff75"},
- {name:"SS",color:"#ff4b75"},
- {name:"SSS",color:"#ffd447"}
+const rankLevels=[
+ {name:"E",color:"#89958c",title:"PRINCIPIANTE"},
+ {name:"D",color:"#b77b48",title:"IN CRESCITA"},
+ {name:"C",color:"#e5bd43",title:"INTERMEDIO"},
+ {name:"B",color:"#39a9ff",title:"AVANZATO"},
+ {name:"A",color:"#a45cff",title:"ESPERTO"},
+ {name:"S",color:"#39ff75",title:"ELITE"},
+ {name:"SS",color:"#ff4d78",title:"MASTER"},
+ {name:"SSS",color:"#ffd447",title:"LEGGENDA"}
 ];
 
-let data=JSON.parse(localStorage.getItem("fittracker")||"{}");
-data.sessions ||= [];
-data.muscles ||= muscles;
-data.exercises ||= [];
-let selectedMuscle="chest";
-let timerInterval=null;
-let timerRemaining=90;
+const muscleInfo={
+ chest:{name:"Petto",parts:["chest","chest2"],record:0},
+ shoulders:{name:"Spalle",parts:["shoulders"],record:0},
+ arms:{name:"Braccia",parts:["arms"],record:0},
+ abs:{name:"Addominali",parts:["abs"],record:0},
+ quads:{name:"Quadricipiti",parts:["quads"],record:0},
+ calves:{name:"Polpacci",parts:["calves"],record:0}
+};
 
-function saveData(){
- localStorage.setItem("fittracker",JSON.stringify(data));
+const defaultProgram={
+ "Lunedì":{name:"Petto e tricipiti",exercises:[
+  {name:"Panca piana",sets:3,reps:10,muscle:"chest"},
+  {name:"Panca inclinata",sets:3,reps:10,muscle:"chest"},
+  {name:"Push down",sets:3,reps:12,muscle:"arms"}
+ ]},
+ "Martedì":{name:"Schiena e bicipiti",exercises:[
+  {name:"Lat machine",sets:3,reps:10,muscle:"arms"},
+  {name:"Rematore",sets:3,reps:10,muscle:"arms"},
+  {name:"Curl manubri",sets:3,reps:12,muscle:"arms"}
+ ]},
+ "Mercoledì":{name:"Riposo",exercises:[]},
+ "Giovedì":{name:"Gambe",exercises:[
+  {name:"Squat",sets:3,reps:10,muscle:"quads"},
+  {name:"Leg press",sets:3,reps:12,muscle:"quads"},
+  {name:"Calf raise",sets:3,reps:15,muscle:"calves"}
+ ]},
+ "Venerdì":{name:"Spalle e addome",exercises:[
+  {name:"Shoulder press",sets:3,reps:10,muscle:"shoulders"},
+  {name:"Alzate laterali",sets:3,reps:12,muscle:"shoulders"},
+  {name:"Crunch",sets:3,reps:15,muscle:"abs"}
+ ]},
+ "Sabato":{name:"Cardio",exercises:[
+  {name:"Camminata",sets:1,reps:30,muscle:"abs"}
+ ]},
+ "Domenica":{name:"Riposo",exercises:[]}
+};
+
+let data=JSON.parse(localStorage.getItem("fittracker_v2")||"{}");
+data.program ||= structuredClone(defaultProgram);
+data.muscles ||= {};
+data.sessions ||= [];
+data.profile ||= null;
+
+let selectedDay=days[(new Date().getDay()+6)%7];
+let selectedMuscle="chest";
+let doneExercises={};
+
+function persist(){
+ localStorage.setItem("fittracker_v2",JSON.stringify(data));
+}
+
+function saveProfile(){
+ const age=Number($("age").value);
+ const weight=Number($("weight").value);
+ const height=Number($("height").value);
+ if(age<13||age>100||weight<20||weight>300||height<100||height>230){
+  alert("Controlla età, peso e altezza.");return;
+ }
+ data.profile={gender:$("gender").value,age,weight,height};
+ persist();
+ $("setup").classList.add("hidden");
+ init();
+}
+
+function editProfile(){
+ $("setup").classList.remove("hidden");
+ if(data.profile){
+  $("gender").value=data.profile.gender;
+  $("age").value=data.profile.age;
+  $("weight").value=data.profile.weight;
+  $("height").value=data.profile.height;
+ }
 }
 
 function showPage(id,btn){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
  $(id).classList.add("active");
  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
- btn.classList.add("active");
+ if(btn)btn.classList.add("active");
  render();
 }
 
-function rankFor(weight){
- if(weight>=120)return 7;
- if(weight>=90)return 6;
- if(weight>=65)return 5;
- if(weight>=45)return 4;
- if(weight>=30)return 3;
- if(weight>=15)return 2;
- if(weight>=5)return 1;
+function rankFromWeight(w){
+ if(w>=120)return 7;
+ if(w>=90)return 6;
+ if(w>=65)return 5;
+ if(w>=45)return 4;
+ if(w>=30)return 3;
+ if(w>=15)return 2;
+ if(w>=5)return 1;
  return 0;
 }
 
-function renderMuscles(){
- const list=$("muscleList");
- list.innerHTML="";
- Object.keys(muscles).forEach(key=>{
-  const m=muscles[key];
-  const rank=ranks[m.rank];
-  const btn=document.createElement("button");
-  btn.className="muscle-btn"+(selectedMuscle===key?" selected":"");
-  btn.innerHTML=m.name+' <span class="rank" style="color:'+rank.color+'">RANK '+rank.name+'</span>';
-  btn.onclick=()=>selectMuscle(key);
-  list.appendChild(btn);
-  m.parts.forEach(part=>{
-   const el=$(part);
-   if(el){
-    el.style.fill=rank.color;
-    el.style.opacity=0.3+(m.rank/7)*0.7;
-    el.style.filter=`drop-shadow(0 0 ${2+m.rank*2}px ${rank.color})`;
-    el.style.transformOrigin="center";
-    el.style.transform=`scale(${1+m.rank*.025})`;
-    el.classList.toggle("active",selectedMuscle===key);
-   }
-  });
- });
+function getMuscle(key){
+ return data.muscles[key]||{record:0,rank:0,weight:0};
 }
 
-function selectMuscle(key){
- selectedMuscle=key;
- const m=muscles[key];
- const r=ranks[m.rank];
+function getRank(key){
+ return rankLevels[getMuscle(key).rank||0];
+}
+
+function renderBody(){
+ const keys=Object.keys(muscleInfo);
+ let totalRank=0;
+ keys.forEach(key=>{
+  const m=getMuscle(key);
+  totalRank+=m.rank||0;
+  const rank=getRank(key);
+  muscleInfo[key].parts.forEach(id=>{
+   const el=$(id);
+   if(!el)return;
+   el.style.fill=rank.color;
+   el.style.opacity=.25+((m.rank||0)/7)*.75;
+   el.style.filter=`drop-shadow(0 0 ${(m.rank||0)*2+2}px ${rank.color})`;
+   el.style.transformOrigin="center";
+   el.style.transform=`scale(${1+(m.rank||0)*.018})`;
+   el.classList.toggle("selected",key===selectedMuscle);
+  });
+ });
+ const overall=Math.round(totalRank/keys.length);
+ const rank=rankLevels[overall];
+ $("overallRank").textContent=rank.name;
+ $("overallRank").style.color=rank.color;
+ $("overallName").textContent=rank.title;
+ $("overallDescription").textContent="La tua progressione muscolare complessiva";
+ renderMuscleList();
+}
+
+function renderMuscleList(){
+ $("muscleList").innerHTML="";
+ Object.keys(muscleInfo).forEach(key=>{
+  const m=getMuscle(key),r=getRank(key);
+  const b=document.createElement("button");
+  b.className="muscle-btn"+(selectedMuscle===key?" selected":"");
+  b.innerHTML=muscleInfo[key].name+" <span style='color:"+r.color+"'>"+r.name+"</span>";
+  b.onclick=()=>{selectedMuscle=key;renderBody();renderMuscleDetail()};
+  $("muscleList").appendChild(b);
+ });
+ renderMuscleDetail();
+}
+
+function renderMuscleDetail(){
+ const key=selectedMuscle,m=getMuscle(key),r=getRank(key);
  $("muscleDetail").innerHTML=`
-  <h3 style="color:${r.color}">${m.name} — Rank ${r.name}</h3>
-  <div class="grid">
-   <div class="stat"><strong>${m.record} kg</strong><span class="muted">Record personale</span></div>
-   <div class="stat"><strong>${m.progress}%</strong><span class="muted">Progressione</span></div>
-  </div>
-  <p>Ultimo carico registrato: ${m.weight} kg</p>
-  <div class="progress"><span style="width:${m.progress}%;background:${r.color}"></span></div>
-  <label class="muted">Registra un nuovo carico (kg)</label>
-  <input id="muscleWeight" type="number" min="0" placeholder="Es. 40">
-  <button onclick="updateMuscle('${key}')">Aggiorna muscolo</button>
- `;
- renderMuscles();
+ <h3 style="color:${r.color}">${muscleInfo[key].name} · Rank ${r.name}</h3>
+ <div class="grid">
+  <div class="stat"><strong>${m.record||0} kg</strong><span class="muted">Record registrato</span></div>
+  <div class="stat"><strong>${m.weight||0} kg</strong><span class="muted">Ultimo carico</span></div>
+ </div>
+ <label>Registra un carico (kg)</label>
+ <input id="newLoad" type="number" min="0" placeholder="Es. 30">
+ <button onclick="updateMuscle('${key}')">AGGIORNA RANK</button>
+ <p class="notice">I livelli sono obiettivi di gioco basati sul carico che inserisci, non standard sportivi universali.</p>`;
 }
 
 function updateMuscle(key){
- const val=Number($("muscleWeight").value);
- if(!Number.isFinite(val)||val<=0)return alert("Inserisci un carico valido.");
- const m=muscles[key];
- m.weight=val;
- m.record=Math.max(m.record,val);
- m.rank=rankFor(m.record);
- m.progress=Math.min(100,Math.round((m.record/120)*100));
- data.muscles=muscles;
- saveData();
- renderMuscles();
- selectMuscle(key);
+ const v=Number($("newLoad").value);
+ if(!v||v<=0)return alert("Inserisci un carico valido.");
+ const old=getMuscle(key);
+ data.muscles[key]={
+  weight:v,record:Math.max(old.record||0,v),rank:rankFromWeight(Math.max(old.record||0,v))
+ };
+ persist();render();
 }
 
-function renderExercises(){
- const box=$("exerciseList");
- box.innerHTML="";
- const exercises=data.exercises;
- exercises.forEach((ex,i)=>{
+function renderCalendar(){
+ $("weekCalendar").innerHTML="";
+ $("calendarEditor").innerHTML="";
+ days.forEach(day=>{
+  const p=data.program[day]||{name:"Riposo",exercises:[]};
   const row=document.createElement("div");
-  row.className="exercise";
-  const name=document.createElement("div");
-  name.innerHTML=`<strong>${escapeHTML(ex.name)}</strong><small>${escapeHTML(ex.sets||"3")} serie × ${escapeHTML(ex.reps||"10")} ripetizioni</small>`;
-  const check=document.createElement("input");
-  check.type="checkbox";
-  check.checked=!!ex.done;
-  check.onchange=()=>{
-   ex.done=check.checked;
-   saveData();
-   render();
-  };
-  row.append(name,check);
-  box.appendChild(row);
+  row.className="dayrow";
+  row.innerHTML=`<div><strong>${day}</strong><br><small class="muted">${escapeHTML(p.name)}</small></div>`;
+  const b=document.createElement("button");
+  b.className="secondary";
+  b.textContent="VEDI";
+  b.onclick=()=>{selectedDay=day;renderDayWorkout();showPage("calendar")};
+  row.appendChild(b);
+  $("weekCalendar").appendChild(row);
+
+  const edit=document.createElement("div");
+  edit.className="dayrow";
+  edit.innerHTML=`<div><strong>${day}</strong><br><small class="muted">${escapeHTML(p.name)}</small></div>`;
+  const actions=document.createElement("div");
+  const change=document.createElement("button");
+  change.className="secondary smallbtn";change.textContent="Modifica";
+  change.onclick=()=>editDay(day);
+  const view=document.createElement("button");
+  view.className="smallbtn";view.textContent="Apri";
+  view.onclick=()=>{selectedDay=day;renderDayWorkout()};
+  actions.append(change,view);edit.appendChild(actions);
+  $("calendarEditor").appendChild(edit);
  });
+ const sel=$("trainingDay");
+ sel.innerHTML=days.map(d=>`<option>${d}</option>`).join("");
+ sel.value=selectedDay;
 }
 
-function addExercise(){
+function editDay(day){
+ const p=data.program[day]||{name:"Riposo",exercises:[]};
+ const name=prompt("Nome allenamento per "+day+" (scrivi Riposo per riposare):",p.name);
+ if(name===null)return;
+ if(name.trim().toLowerCase()==="riposo"){
+  data.program[day]={name:"Riposo",exercises:[]};
+ }else{
+  data.program[day].name=name.trim();
+  data.program[day].exercises ||= [];
+  if(!data.program[day].exercises.length){
+   data.program[day].exercises.push({name:"Nuovo esercizio",sets:3,reps:10,muscle:"chest"});
+  }
+ }
+ persist();render();
+ if(day===selectedDay)renderDayWorkout();
+}
+
+function renderDayWorkout(){
+ const p=data.program[selectedDay]||{name:"Riposo",exercises:[]};
+ $("selectedDayWorkout").innerHTML=`<h3>${selectedDay} · ${escapeHTML(p.name)}</h3>`;
+ if(!p.exercises.length){
+  $("selectedDayWorkout").innerHTML+="<p>Giornata di riposo.</p>";
+ }else{
+  p.exercises.forEach((ex,i)=>{
+   const div=document.createElement("div");
+   div.className="exercise";
+   div.innerHTML=`<div class="exercise-top"><strong>${escapeHTML(ex.name)}</strong><span>${ex.sets} × ${ex.reps}</span></div>`;
+   const edit=document.createElement("button");
+   edit.className="secondary smallbtn";edit.textContent="Modifica";
+   edit.onclick=()=>editExercise(selectedDay,i);
+   const del=document.createElement("button");
+   del.className="danger smallbtn";del.textContent="Elimina";
+   del.onclick=()=>{p.exercises.splice(i,1);persist();renderDayWorkout();renderCalendar()};
+   div.append(edit,del);$("selectedDayWorkout").appendChild(div);
+  });
+ }
+ const add=document.createElement("button");
+ add.textContent="+ AGGIUNGI ESERCIZIO";
+ add.onclick=()=>addExercise(selectedDay);
+ $("selectedDayWorkout").appendChild(add);
+}
+
+function addExercise(day){
  const name=prompt("Nome esercizio:");
  if(!name)return;
- const sets=prompt("Numero serie","3")||"3";
- const reps=prompt("Ripetizioni","10")||"10";
- data.exercises.push({name,sets,reps,done:false});
- saveData();
- renderExercises();
+ const sets=Number(prompt("Numero serie","3"))||3;
+ const reps=Number(prompt("Ripetizioni","10"))||10;
+ const p=data.program[day];
+ p.exercises.push({name,sets,reps,muscle:"chest"});
+ persist();renderDayWorkout();renderCalendar();
 }
 
-function saveTraining(){
- const completed=data.exercises.filter(e=>e.done).length;
- if(!completed)return alert("Completa almeno un esercizio.");
- data.sessions.push({
-  date:$("date").value||new Date().toISOString().slice(0,10),
-  day:$("day").value,
-  count:completed,
-  calories:Number(data.lastCalories||0)
+function editExercise(day,i){
+ const ex=data.program[day].exercises[i];
+ const name=prompt("Nome esercizio:",ex.name);
+ if(name===null)return;
+ const sets=Number(prompt("Numero serie:",ex.sets))||ex.sets;
+ const reps=Number(prompt("Ripetizioni:",ex.reps))||ex.reps;
+ ex.name=name;ex.sets=sets;ex.reps=reps;
+ persist();renderDayWorkout();
+}
+
+function estimateCalories(){
+ if(!data.profile)return 0;
+ const minutes=Number($("duration").value)||0;
+ if(!minutes)return 0;
+ const intensity=5;
+ return Math.round(intensity*3.5*data.profile.weight/200*minutes);
+}
+
+function renderTraining(){
+ const profile=data.profile;
+ $("profileWeight").textContent=profile.weight+" kg";
+ $("trainingDay").value=selectedDay;
+ const p=data.program[$("trainingDay").value]||{name:"Riposo",exercises:[]};
+ $("trainingExercises").innerHTML="";
+ p.exercises.forEach((ex,i)=>{
+  const row=document.createElement("div");
+  row.className="exercise";
+  const checked=!!doneExercises[i];
+  row.innerHTML=`<div class="exercise-top"><div><strong>${escapeHTML(ex.name)}</strong><br><small>${ex.sets} serie × ${ex.reps} ripetizioni</small></div><input type="checkbox" ${checked?"checked":""}></div>`;
+  row.querySelector("input").onchange=e=>doneExercises[i]=e.target.checked;
+  $("trainingExercises").appendChild(row);
  });
- data.exercises.forEach(e=>e.done=false);
- saveData();
- render();
+ $("estimatedCalories").textContent=estimateCalories();
+}
+
+function saveWorkout(){
+ const day=$("trainingDay").value;
+ const p=data.program[day];
+ const completed=p.exercises.filter((ex,i)=>doneExercises[i]).length;
+ if(!completed)return alert("Seleziona almeno un esercizio completato.");
+ const minutes=Number($("duration").value);
+ if(!minutes||minutes<=0)return alert("Inserisci la durata dell'allenamento.");
+ const kcal=estimateCalories();
+ data.sessions.push({
+  date:new Date().toLocaleDateString("it-IT"),
+  day,workout:p.name,completed,minutes,kcal
+ });
+ doneExercises={};
+ $("duration").value="";
+ persist();render();
  alert("Allenamento salvato!");
 }
 
-function calculateCalories(){
- const w=Number($("weight").value);
- const min=Number($("duration").value);
- const met=Number($("intensity").value);
- if(w<=0||min<=0)return alert("Inserisci peso e durata validi.");
- const kcal=Math.round(met*3.5*w/200*min);
- $("calorieResult").textContent=kcal+" kcal";
- data.lastCalories=kcal;
- saveData();
+function renderProgress(){
+ $("sessionCount").textContent=data.sessions.length;
+ $("exerciseCount").textContent=data.sessions.reduce((n,s)=>n+s.completed,0);
+ $("calorieCount").textContent=data.sessions.reduce((n,s)=>n+s.kcal,0);
+ $("weightDisplay").textContent=data.profile.weight+" kg";
+ $("history").innerHTML="";
+ data.sessions.slice().reverse().forEach(s=>{
+  const div=document.createElement("div");
+  div.className="exercise";
+  div.innerHTML=`<strong>${escapeHTML(s.day)} · ${escapeHTML(s.workout)}</strong><br><small>${escapeHTML(s.date)} · ${s.completed} esercizi · ${s.minutes} min · ${s.kcal} kcal stimate</small>`;
+  $("history").appendChild(div);
+ });
+ if(!data.sessions.length)$("history").innerHTML="<p>Nessuna sessione registrata.</p>";
 }
 
-function startTimer(seconds){
- clearInterval(timerInterval);
- timerRemaining=seconds;
- updateTimer();
- timerInterval=setInterval(()=>{
-  timerRemaining--;
-  updateTimer();
-  if(timerRemaining<=0){
-   clearInterval(timerInterval);
-   alert("Recupero terminato!");
-  }
- },1000);
-}
-function stopTimer(){
- clearInterval(timerInterval);
- timerRemaining=90;
- updateTimer();
-}
-function updateTimer(){
- const m=String(Math.floor(timerRemaining/60)).padStart(2,"0");
- const s=String(timerRemaining%60).padStart(2,"0");
- $("timer").textContent=m+":"+s;
-}
-
-function render(){
- renderMuscles();
- renderExercises();
- const total=data.sessions.reduce((n,s)=>n+s.count,0);
- $("totalWorkouts").textContent=total;
- $("workoutCount").textContent=data.sessions.length;
- $("calorieCount").textContent=data.sessions.reduce((n,s)=>n+(s.calories||0),0);
- $("progressWorkouts").textContent=data.sessions.length;
- $("progressExercises").textContent=total;
- $("history").innerHTML=data.sessions.slice().reverse().map(s=>
-  `<div class="history-item"><strong>${escapeHTML(s.day)}</strong><br><small>${escapeHTML(s.date)} · ${s.count} esercizi · ${s.calories} kcal</small></div>`
- ).join("")||"<p>Nessun allenamento salvato.</p>";
- selectMuscle(selectedMuscle);
-}
-
-function exportData(){
- const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;a.download="fittracker-backup.json";a.click();
- URL.revokeObjectURL(url);
-}
-
-function resetData(){
- if(!confirm("Vuoi cancellare tutti i dati?"))return;
- localStorage.removeItem("fittracker");
- location.reload();
-}
-
-function escapeHTML(value){
- return String(value).replace(/[&<>"']/g,c=>({
+function escapeHTML(v){
+ return String(v).replace(/[&<>"']/g,c=>({
   "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
  }[c]));
 }
 
-$("date").value=new Date().toISOString().slice(0,10);
-render();
+function render(){
+ renderBody();
+ renderCalendar();
+ renderDayWorkout();
+ renderTraining();
+ renderProgress();
+}
+
+function init(){
+ if(!data.profile){$("setup").classList.remove("hidden");return;}
+ $("setup").classList.add("hidden");
+ $("bodyBase").style.transformOrigin="center";
+ // Modello grafico generico: selezione maschile/femminile.
+ if(data.profile.gender==="female"){
+  $("bodyBase").style.transform="scaleX(.88)";
+ }
+ render();
+ $("trainingDay").addEventListener("change",()=>{
+  selectedDay=$("trainingDay").value;
+  doneExercises={};renderTraining();
+ });
+ $("duration").addEventListener("input",()=>{
+  $("estimatedCalories").textContent=estimateCalories();
+ });
+}
+
+init();
 </script>
 </body>
 </html>
